@@ -5,12 +5,12 @@ namespace AuthServiceAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class WeatherForecastController : ControllerBase
+public class AuthController : ControllerBase
 {
 
-    private readonly ILogger<WeatherForecastController> _logger;
+    private readonly ILogger<AuthController> _logger;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    public AuthController(ILogger<AuthController> logger)
     {
         _logger = logger;
     }
@@ -20,7 +20,7 @@ public class WeatherForecastController : ControllerBase
     {
         var properties = new Dictionary<string, string>();
         var assembly = typeof(Program).Assembly;
-        properties.Add("service", "OrderService");
+        properties.Add("service", "AuthServiceAPI");
         var ver = FileVersionInfo.GetVersionInfo(
         typeof(Program).Assembly.Location).ProductVersion ?? "N/A";
         properties.Add("version", ver);
