@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using AuthServiceAPI.Services;
 
 namespace AuthServiceAPI.Controllers;
 
@@ -7,12 +8,13 @@ namespace AuthServiceAPI.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-
     private readonly ILogger<AuthController> _logger;
+    private readonly VaultService _vaultService;
 
-    public AuthController(ILogger<AuthController> logger)
+    public AuthController(ILogger<AuthController> logger, VaultService vaultService)
     {
         _logger = logger;
+        _vaultService = vaultService;
 
         // Log værtsnavn og IP-adresse
         var hostName = System.Net.Dns.GetHostName();
@@ -45,4 +47,24 @@ public class AuthController : ControllerBase
         return properties;
     }
 
+    // GET: /auth/secret
+    [HttpGet("secret")]
+    public async Task<IActionResult> GetSecret()
+    {
+        try
+        {
+            // Hent hemmeligheden fra Vault
+            var jwtSecret = await _vaultService.GetSecretAsync("jwt-secret", "value");
+            
+            // Log, at hemmeligheden blev hentet
+            _logger.LogInformation("JWT Secret fetched successfully from Vault.");
+            
+            return Ok(new { Secret = jwtSecret });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching secret from Vault.");
+            return StatusCode(500, "An error occurred while fetching the secret.");
+        }
+    }
 }
