@@ -47,6 +47,8 @@ public class AuthController : ControllerBase
         return properties;
     }
 
+    // Test
+
     // GET: /auth/secret
     [HttpGet("secret")]
     public async Task<IActionResult> GetSecret()
