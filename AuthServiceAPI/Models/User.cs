@@ -1,29 +1,39 @@
-namespace AuthServiceAPI.Models 
+using MongoDB.Bson.Serialization.Attributes;
+
+
+namespace Authentication.Models
 {
     public class User
     {
-        public Guid Id { get; set; }
-        public string Username { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty; // Dette er kun til login - i UserService gemmer vi PasswordHash
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public List<string> Roles { get; set; } = new();
-        public DateTime CreatedAt { get; set; }
-        public DateTime? LastLogin { get; set; }
-        public bool IsActive { get; set; }
-    }
+        [BsonId]
+        public Guid _id { get; set; }
+        public string? firstName { get; set; }
+        public string? lastName { get; set; }
+        public string? email { get; set; }
 
-    public class LoginModel
-    {
-        public string Username { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-    }
+        public string? address { get; set; }
 
-    public class LoginResponse
-    {
-        public string Token { get; set; } = string.Empty;
-        public DateTime ExpiresAt { get; set; }
-        public User User { get; set; } = new();
+        public string? telephonenumber { get; set; }
+
+        public int? role { get; set; } = 1;
+
+        public string? username { get; set; }
+
+        public string? password { get; set; }
+
+        public User(string firstName, string lastName, string email, string adress, string telephonenumber, int role, string username, string password)
+        {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.email = email;
+            this.address = address;
+            this.telephonenumber = telephonenumber;
+            this.role = role;
+            this.username = username;
+            this.password = password;
+        }
+        public User()
+        {
+        }
     }
-}
+} 
