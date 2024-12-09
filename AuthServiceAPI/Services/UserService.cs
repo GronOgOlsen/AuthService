@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Authentication.Models;
-using Models;
+using AuthServiceAPI.Models;
+using AuthServiceAPI.Interfaces;
 
-namespace Authentication.Service
+namespace AuthServiceAPI.Services
 {
     public class UserService : IUserService
     {

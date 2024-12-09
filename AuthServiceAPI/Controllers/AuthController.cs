@@ -5,7 +5,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Authentication.Models;
 using VaultSharp;
 using VaultSharp.V1.AuthMethods.Token;
 using VaultSharp.V1.AuthMethods;
@@ -17,17 +16,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 using NLog;
 using VaultSharp.V1.SecretsEngines.Database;
-using Authentication.Service;
-using Authentication.Models;
-using Models;
+using AuthServiceAPI.Services;
+using AuthServiceAPI.Models;
+using AuthServiceAPI.Interfaces;
 
-namespace Authentication.Controllers
+namespace AuthServiceAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthenticationController : ControllerBase
+    public class AuthServiceAPIController : ControllerBase
     {
-        private readonly ILogger<AuthenticationController> _logger;
+        private readonly ILogger<AuthServiceAPIController> _logger;
         private readonly IConfiguration _config;
         private readonly VaultService _vaultService;
         private readonly IUserService _userService;
@@ -35,7 +34,7 @@ namespace Authentication.Controllers
         private string secret;
         private string issuer;
 
-        public AuthenticationController(ILogger<AuthenticationController> logger, IConfiguration config, VaultService vault, IUserService userService)
+        public AuthServiceAPIController(ILogger<AuthServiceAPIController> logger, IConfiguration config, VaultService vault, IUserService userService)
         {
             _config = config;
             _logger = logger;
@@ -76,7 +75,6 @@ namespace Authentication.Controllers
             return tokenString;
         }
 
-        // POST: http://localhost:81/auth/loginuser
         [AllowAnonymous]
         [HttpPost("loginuser")]
         public async Task<IActionResult> LoginUser([FromBody] LoginDTO user)
@@ -175,8 +173,8 @@ namespace Authentication.Controllers
 
             if (!string.IsNullOrEmpty(ipAddr))
             {
-                _logger.LogInformation($"Authentication service responding from {ipAddr}");
-                _nLogger.Info($"Authentication service responding from {ipAddr}");
+                _logger.LogInformation($"AuthServiceAPI service responding from {ipAddr}");
+                _nLogger.Info($"AuthServiceAPI service responding from {ipAddr}");
             }
             else
             {

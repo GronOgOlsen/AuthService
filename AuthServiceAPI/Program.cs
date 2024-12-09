@@ -2,20 +2,20 @@ using System;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Authentication;
 using VaultSharp;
 using VaultSharp.V1.AuthMethods.Token;
 using VaultSharp.V1.AuthMethods;
 using VaultSharp.V1.Commons;
 using NLog;
 using NLog.Web;
-using Authentication.Service;
-using Authentication.Models;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson;
 using Microsoft.AspNetCore.Authentication; 
+using AuthServiceAPI.Services;
+using AuthServiceAPI.Models;
+using AuthServiceAPI.Interfaces;
 
 var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings()
     .GetCurrentClassLogger();

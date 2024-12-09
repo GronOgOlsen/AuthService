@@ -1,4 +1,4 @@
-namespace Models {
+namespace AuthServiceAPI.Models {
     public class LoginDTO
     {
         public string username { get; set; }

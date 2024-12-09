@@ -8,7 +8,7 @@ using VaultSharp.V1.Commons;
 using Microsoft.Extensions.Configuration;
 using VaultSharp.Core;
 
-namespace Authentication
+namespace AuthServiceAPI.Services
 {
     public class VaultService
     {
