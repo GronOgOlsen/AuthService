@@ -134,37 +134,6 @@ namespace AuthServiceAPI.Controllers
             }
         }
 
-        [AllowAnonymous]
-        [HttpPost("/api/legal/login")]
-        [Authorize(Roles = "3")]
-        public async Task<IActionResult> LoginLegal([FromBody] LoginDTO user)
-        {
-            _logger.LogInformation("Attempting to log in admin user {Username}", user.username);
-
-            var validUser = await _userService.ValidateUser(user);
-
-            try
-            {
-                if (validUser.role == 3)
-                {
-                    var token = GenerateJwtToken(user.username, issuer, secret, 3, _id: validUser._id);
-                    LogIPAddress();
-                    _logger.LogInformation("Admin user {Username} logged in successfully", user.username);
-                    return Ok(new { token });
-                }
-                else
-                {
-                    _logger.LogWarning("Invalid role for admin user {Username}. Login attempt rejected.", user.username);
-                    return Unauthorized("Invalid username or password.");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while generating JWT token: {Message}", ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred during login.");
-            }
-        }
-
         private void LogIPAddress()
         {
             var hostName = System.Net.Dns.GetHostName();
