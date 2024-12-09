@@ -31,7 +31,7 @@ try
     var vaultService = new VaultService(configuration);
 
     string mySecret = await vaultService.GetSecretAsync("secrets", "SecretKey") ?? "5Jw9yT4fb9T5XrwKUz23QzA5D9BuY3p6";
-    string myIssuer = await vaultService.GetSecretAsync("secrets", "IssuerKey") ?? "gAdDxQDQq7UYNxF3F8pLjVmGuU5u8g3y";
+    string myIssuer = await vaultService.GetSecretAsync("secrets", "IssuerKey") ?? "????";
     string myConnectionString = await vaultService.GetSecretAsync("secrets", "MongoConnectionString") ?? "mongodb+srv://admin:1234@4semproj.npem60f.mongodb.net/";
     
     configuration["SecretKey"] = mySecret;

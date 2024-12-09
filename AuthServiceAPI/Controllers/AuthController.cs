@@ -76,6 +76,7 @@ namespace Authentication.Controllers
             return tokenString;
         }
 
+        // POST: http://localhost:81/auth/loginuser
         [AllowAnonymous]
         [HttpPost("loginuser")]
         public async Task<IActionResult> LoginUser([FromBody] LoginDTO user)
