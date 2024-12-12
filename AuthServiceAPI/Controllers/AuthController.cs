@@ -97,8 +97,9 @@ namespace AuthServiceAPI.Controllers
                 return Ok(new { token });
             }
 
-            _logger.LogWarning("Invalid role for user {Username}. Login attempt rejected.", user.username);
-            return Unauthorized("Invalid username or password.");
+            // Håndter forkert rolle
+            _logger.LogWarning("Invalid role for user {Username}. Expected role 1, but got {Role}. Login attempt rejected.", user.username, validUser.role);
+            return Unauthorized("Invalid role for user.");
         }
 
 
@@ -111,26 +112,23 @@ namespace AuthServiceAPI.Controllers
 
             var validUser = await _userService.ValidateUser(user);
 
-            try
+            if (validUser == null)
             {
-                if (validUser.role == 2)
-                {
-                    var token = GenerateJwtToken(validUser.username, issuer, secret, 2, _id: validUser._id);
-                    LogIPAddress();
-                    _logger.LogInformation("Admin user {Username} logged in successfully", user.username);
-                    return Ok(new { token });
-                }
-                else
-                {
-                    _logger.LogWarning("Invalid role for admin user {Username}. Login attempt rejected.", user.username);
-                    return Unauthorized("Invalid username or password.");
-                }
+                _logger.LogWarning("Invalid username or password for user: {Username}", user.username);
+                return Unauthorized("Invalid username or password.");
             }
-            catch (Exception ex)
+
+            if (validUser.role == 2)
             {
-                _logger.LogError(ex, "Error occurred while generating JWT token: {Message}", ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred during login.");
+                var token = GenerateJwtToken(validUser.username, issuer, secret, 2, _id: validUser._id);
+                LogIPAddress();
+                _logger.LogInformation("Admin user {Username} logged in successfully", user.username);
+                return Ok(new { token });
             }
+
+            // Håndter forkert rolle
+            _logger.LogWarning("Invalid role for user {Username}. Expected role 2, but got {Role}. Login attempt rejected.", user.username, validUser.role);
+            return Unauthorized("Invalid role for user.");
         }
 
         private void LogIPAddress()
