@@ -17,13 +17,22 @@ namespace AuthServiceAPI.Services
             _client = client;
             _logger = logger;
         }
-        
+
         public async Task<User> ValidateUser(LoginDTO user)
         {
             _logger.LogInformation("Validating user: {@User}", user);
             var userServiceResponse = await _client.PostAsJsonAsync("api/user/validate", user);
-            userServiceResponse.EnsureSuccessStatusCode();
-            return await userServiceResponse.Content.ReadFromJsonAsync<User>();
-        } 
+            
+            if (userServiceResponse.IsSuccessStatusCode)
+            {
+                return await userServiceResponse.Content.ReadFromJsonAsync<User>();
+            }
+
+            if (userServiceResponse.StatusCode == HttpStatusCode.NotFound)
+            {
+                _logger.LogWarning("User not found: {Username}", user.username);
+                return null;
+            }
+        }
     }
 }
