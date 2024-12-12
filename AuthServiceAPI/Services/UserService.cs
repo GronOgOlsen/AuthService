@@ -22,15 +22,29 @@ namespace AuthServiceAPI.Services
         {
             _logger.LogInformation("Validating user: {@User}", user);
 
-            var userServiceResponse = await _client.PostAsJsonAsync("api/user/validate", user);
-
-            if (userServiceResponse.IsSuccessStatusCode)
+            try
             {
-                return await userServiceResponse.Content.ReadFromJsonAsync<User>();
-            }
+                var userServiceResponse = await _client.PostAsJsonAsync("api/user/validate", user);
 
-            _logger.LogWarning("Validation failed for user: {Username}. StatusCode: {StatusCode}", user.username, userServiceResponse.StatusCode);
-            return null; // Return null hvis det ikke er en succes
+                if (userServiceResponse.IsSuccessStatusCode)
+                {
+                    return await userServiceResponse.Content.ReadFromJsonAsync<User>();
+                }
+
+                if (userServiceResponse.StatusCode == HttpStatusCode.NotFound)
+                {
+                    _logger.LogWarning("Invalid username or password for user: {Username}", user.username);
+                    return null;
+                }
+
+                _logger.LogError("Unexpected response from UserService: {StatusCode}", userServiceResponse.StatusCode);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while communicating with UserService.");
+                throw; // Lad undtagelser ved forbindelsesproblemer blive kastet
+            }
         }
 
     }
