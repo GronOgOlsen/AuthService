@@ -23,7 +23,7 @@ using AuthServiceAPI.Interfaces;
 namespace AuthServiceAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/auth")]
     public class AuthServiceAPIController : ControllerBase
     {
         private readonly ILogger<AuthServiceAPIController> _logger;
