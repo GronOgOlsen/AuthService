@@ -151,22 +151,5 @@ namespace AuthServiceAPI.Controllers
                 _nLogger.Warn("Unable to retrieve the IP address.");
             }
         }
-
-        [HttpGet("get-secret")]
-        public async Task<IActionResult> GetSecret()
-        {
-            try
-            {
-                var secret = await _vaultService.GetSecretAsync("secret", "mySecret");
-                _logger.LogInformation("Secret retrieved successfully");
-                return Ok(new { mySecret = secret });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while retrieving secret: {Message}", ex.Message);
-                _nLogger.Error(ex, "Error occurred while retrieving secret");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving the secret.");
-            }
-        }
     }
 }
