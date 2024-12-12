@@ -82,27 +82,26 @@ namespace AuthServiceAPI.Controllers
             _logger.LogInformation("Attempting to log in user {Username}", user.username);
 
             var validUser = await _userService.ValidateUser(user);
-            try
+
+            if (validUser == null)
             {
-                if (validUser.role == 1)
-                {
-                    var token = GenerateJwtToken(validUser.username, issuer, secret, 1, _id: validUser._id);
-                    LogIPAddress();
-                    _logger.LogInformation("User {Username} logged in successfully", user.username);
-                    return Ok(new { token });
-                }
-                else
-                {
-                    _logger.LogWarning("Invalid role for user {Username}. Login attempt rejected.", user.username);
-                    return Unauthorized("Invalid username or password.");
-                }
+                _logger.LogWarning("Invalid username or password for user: {Username}", user.username);
+                return Unauthorized("Invalid username or password.");
             }
-            catch (Exception ex)
+
+            if (validUser.role == 1)
             {
-                _logger.LogError(ex, "Error occurred while generating JWT token: {Message}", ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred during login.");
+                var token = GenerateJwtToken(validUser.username, issuer, secret, 1, _id: validUser._id);
+                LogIPAddress();
+                _logger.LogInformation("User {Username} logged in successfully", user.username);
+                return Ok(new { token });
             }
+
+            _logger.LogWarning("Invalid role for user {Username}. Login attempt rejected.", user.username);
+            return Unauthorized("Invalid username or password.");
         }
+
+
 
         [AllowAnonymous]
         [HttpPost("loginadmin")]
