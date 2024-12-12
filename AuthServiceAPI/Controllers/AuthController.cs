@@ -81,9 +81,16 @@ namespace AuthServiceAPI.Controllers
         {
             _logger.LogInformation("Attempting to log in user {Username}", user.username);
 
-            var validUser = await _userService.ValidateUser(user);
             try
             {
+                var validUser = await _userService.ValidateUser(user);
+
+                if (validUser == null)
+                {
+                    _logger.LogWarning("Invalid username or password for user: {Username}", user.username);
+                    return Unauthorized("Invalid username or password.");
+                }
+
                 if (validUser.role == 1)
                 {
                     var token = GenerateJwtToken(validUser.username, issuer, secret, 1, _id: validUser._id);
@@ -97,9 +104,14 @@ namespace AuthServiceAPI.Controllers
                     return Unauthorized("Invalid username or password.");
                 }
             }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Error occurred while communicating with UserService: {Message}", ex.Message);
+                return StatusCode(StatusCodes.Status502BadGateway, "Error connecting to UserService.");
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while generating JWT token: {Message}", ex.Message);
+                _logger.LogError(ex, "An unexpected error occurred: {Message}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred during login.");
             }
         }
