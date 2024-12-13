@@ -21,21 +21,5 @@ namespace AuthServiceAPI.Models
 
         public string? password { get; set; }
 
-        public string? Salt { get; set; }
-
-        public User(string firstName, string lastName, string email, string address, string telephonenumber, int role, string username, string password)
-        {
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.email = email;
-            this.address = address;
-            this.telephonenumber = telephonenumber;
-            this.role = role;
-            this.username = username;
-            this.password = password;
-        }
-        public User()
-        {
-        }
     }
 } 
