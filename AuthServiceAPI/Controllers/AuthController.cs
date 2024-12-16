@@ -19,6 +19,7 @@ using VaultSharp.V1.SecretsEngines.Database;
 using AuthServiceAPI.Services;
 using AuthServiceAPI.Models;
 using AuthServiceAPI.Interfaces;
+using System.Diagnostics;
 
 namespace AuthServiceAPI.Controllers
 {
@@ -147,6 +148,30 @@ namespace AuthServiceAPI.Controllers
                 _logger.LogWarning("Unable to retrieve the IP address.");
                 _nLogger.Warn("Unable to retrieve the IP address.");
             }
+        }
+
+        [HttpGet("version")]
+        public async Task<Dictionary<string, string>> GetVersion()
+        {
+            var properties = new Dictionary<string, string>();
+            var assembly = typeof(Program).Assembly;
+            properties.Add("service", "AuthService");
+            var ver = FileVersionInfo.GetVersionInfo(typeof(Program)
+            .Assembly.Location).ProductVersion;
+            properties.Add("version", ver!);
+            try
+            {
+                var hostName = System.Net.Dns.GetHostName();
+                var ips = await System.Net.Dns.GetHostAddressesAsync(hostName);
+                var ipa = ips.First().MapToIPv4().ToString();
+                properties.Add("hosted-at-address", ipa);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                properties.Add("hosted-at-address", "Could not resolve IP-address");
+            }
+            return properties;
         }
     }
 }
