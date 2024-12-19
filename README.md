@@ -1,2 +1,2 @@
 # AuthService
-AuthService handles authentication and authorization for the application. It issues and validates JWT tokens, enabling secure communication across all microservices.
+AuthService håndterer autentificering og autorisation for applikationen. Den udsteder og validerer JWT-tokens, hvilket muliggør sikker kommunikation på tværs af alle mikrotjenester.
